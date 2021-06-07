@@ -90,9 +90,11 @@ public class MultipartFormDataBodyPublisherTest {
         new Thread(() -> httpd.start()).start();
         try {
             var client = HttpClient.newHttpClient();
-            var request = HttpRequest.newBuilder(new URI("http://localhost:%d/".formatted(httpd.getAddress().getPort())))
-                .POST(new MultipartFormDataBodyPublisher().add("key", "value").addFile("f", Path.of("pom.xml"), "application/xml"))
-                .build();
+            var request = HttpRequest
+                    .newBuilder(new URI("http://localhost:%d/".formatted(httpd.getAddress().getPort())))
+                    .POST(new MultipartFormDataBodyPublisher().add("key", "value").addFile("f", Path.of("pom.xml"),
+                            "application/xml"))
+                    .build();
             client.send(request, BodyHandlers.discarding());
 
         } finally {
