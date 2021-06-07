@@ -12,12 +12,12 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - uses: sdkman/sdkman-action@master
-      id: sdkman
+      id: installjava
       with:
         candidate: java
         version: 16.0.1.hs-adpt
     - uses: sdkman/sdkman-action@master
-      id: sdkman
+      id: installmvn
       with:
         candidate: maven
         version: 3.8.1
