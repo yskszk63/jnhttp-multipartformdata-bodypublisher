@@ -28,5 +28,6 @@ jobs:
         jdkFile: ${{ steps.installjava.outputs.file }}
     - run: mvn formatter:validate
     - run: mvn test
+    - uses: codecov/codecov-action@v1.5.0
 
 # vim: set sw=2 ts=2 sts=2:
