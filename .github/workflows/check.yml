@@ -1,0 +1,32 @@
+name: check
+
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: sdkman/sdkman-action@master
+      id: sdkman
+      with:
+        candidate: java
+        version: 16.0.1.hs-adpt
+    - uses: sdkman/sdkman-action@master
+      id: sdkman
+      with:
+        candidate: maven
+        version: 3.8.1
+    - uses: actions/setup-java@v1
+        id: setup-java
+        with:
+          java-version: 16.0.0
+          jdkFile: ${{ steps.sdkman.outputs.file }}
+    - run: mvn formatter:validate
+    - run: mvn test
+
+# vim: set sw=2 ts=2 sts=2:
