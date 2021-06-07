@@ -25,7 +25,7 @@ jobs:
       id: setup-java
       with:
         java-version: 16.0.0
-        jdkFile: ${{ steps.sdkman.outputs.file }}
+        jdkFile: ${{ steps.installjava.outputs.file }}
     - run: mvn formatter:validate
     - run: mvn test
 
