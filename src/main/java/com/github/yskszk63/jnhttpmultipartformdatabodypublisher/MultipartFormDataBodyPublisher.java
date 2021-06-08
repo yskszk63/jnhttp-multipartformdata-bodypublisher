@@ -12,17 +12,21 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Formatter;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Flow.Subscriber;
 import java.util.function.Supplier;
+import java.util.StringJoiner;
 
 public class MultipartFormDataBodyPublisher implements BodyPublisher {
     private static String nextBoundary() {
         var random = new BigInteger(128, new Random());
-        return "-----------------------------%039d".formatted(random);
+        try (var formatter = new Formatter()) {
+            return formatter.format("-----------------------------%039d", random).toString();
+        }
     }
 
     private final String boundary = nextBoundary();
@@ -67,7 +71,9 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
     }
 
     public String contentType() {
-        return "multipart/form-data;boundary=%s".formatted(this.boundary);
+        try (var formatter = new Formatter()) {
+            return formatter.format("multipart/form-data;boundary=%s", this.boundary).toString();
+        }
     }
 
     @Override
@@ -228,29 +234,31 @@ class MultipartFormDataChannel implements ReadableByteChannel {
         while (true) {
             if (this.buf.hasRemaining()) {
                 var n = Math.min(this.buf.remaining(), buf.remaining());
-                buf.put(this.buf.slice(this.buf.position(), n));
+                var slice = this.buf.slice();
+                slice.limit(n);
+                buf.put(slice);
                 this.buf.position(this.buf.position() + n);
                 return n;
             }
 
             switch (this.state) {
-            case Boundary -> {
+            case Boundary:
                 if (this.parts.hasNext()) {
                     this.current = this.parts.next();
-                    this.buf = ByteBuffer.wrap("%s\r\n".formatted(this.boundary).getBytes());
+                    this.buf = ByteBuffer.wrap((this.boundary + "\r\n").getBytes());
                     this.state = State.Headers;
                 } else {
-                    this.buf = ByteBuffer.wrap("%s--".formatted(this.boundary).getBytes());
+                    this.buf = ByteBuffer.wrap((this.boundary + "--").getBytes());
                     this.state = State.Done;
                 }
-            }
+                break;
 
-            case Headers -> {
+            case Headers:
                 this.buf = ByteBuffer.wrap(this.currentHeaders().getBytes());
                 this.state = State.Body;
-            }
+                break;
 
-            case Body -> {
+            case Body:
                 if (this.channel == null) {
                     this.channel = this.current.open();
                 }
@@ -264,11 +272,10 @@ class MultipartFormDataChannel implements ReadableByteChannel {
                 } else {
                     return n;
                 }
-            }
+                break;
 
-            case Done -> {
+            case Done:
                 return -1;
-            }
             }
         }
     }
@@ -283,27 +290,31 @@ class MultipartFormDataChannel implements ReadableByteChannel {
         var contentType = current.contentType();
         var filename = current.filename();
         if (contentType.isPresent() && filename.isPresent()) {
-            return """
-            Content-Disposition: form-data; name="%s"; filename="%s"\r
-            Content-Type: %s\r
-            \r
-            """.formatted(current.name(), filename.get(), contentType.get());
+            var format = new StringJoiner("\r\n", "", "\r\n")
+                    .add("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"").add("Content-Type: %s")
+                    .toString();
+            try (var formatter = new Formatter()) {
+                return formatter.format(format, current.name(), filename.get(), contentType.get()).toString() + "\r\n"; // FIXME
+                                                                                                                        // escape
+            }
         } else if (contentType.isPresent()) {
-            return """
-            Content-Disposition: form-data; name="%s"\r
-            Content-Type: %s\r
-            \r
-            """.formatted(current.name(), contentType.get());
+            var format = new StringJoiner("\r\n", "", "\r\n").add("Content-Disposition: form-data; name=\"%s\"")
+                    .add("Content-Type: %s").toString();
+            try (var formatter = new Formatter()) {
+                return formatter.format(format, current.name(), contentType.get()).toString() + "\r\n"; // FIXME escape
+            }
         } else if (filename.isPresent()) {
-            return """
-            Content-Disposition: form-data; name="%s"; filename="%s"\r
-            \r
-            """.formatted(current.name(), contentType.get());
+            var format = new StringJoiner("\r\n", "", "\r\n")
+                    .add("Content-Disposition: form-data; name=\"%s\"; filename=\"%s\"").toString();
+            try (var formatter = new Formatter()) {
+                return formatter.format(format, current.name(), filename.get()).toString() + "\r\n"; // FIXME escape
+            }
         } else {
-            return """
-            Content-Disposition: form-data; name="%s"\r
-            \r
-            """.formatted(current.name());
+            var format = new StringJoiner("\r\n", "", "\r\n").add("Content-Disposition: form-data; name=\"%s\"")
+                    .toString();
+            try (var formatter = new Formatter()) {
+                return formatter.format(format, current.name()).toString() + "\r\n"; // FIXME escape
+            }
         }
     }
 }

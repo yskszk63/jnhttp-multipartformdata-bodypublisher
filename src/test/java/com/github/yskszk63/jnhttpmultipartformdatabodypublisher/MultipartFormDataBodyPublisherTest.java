@@ -81,9 +81,7 @@ public class MultipartFormDataBodyPublisherTest {
 
     @Test
     public void testMultipartFormDataChannel() throws Exception {
-        var channel = new MultipartFormDataChannel("----boundary", List.<Part>of(
-            new StringPart("key", "value")
-        ));
+        var channel = new MultipartFormDataChannel("----boundary", List.<Part> of(new StringPart("key", "value")));
         assertEquals(true, channel.isOpen());
         var content = new StringBuilder();
         try (channel) {
@@ -96,12 +94,8 @@ public class MultipartFormDataBodyPublisherTest {
         }
         assertEquals(false, channel.isOpen());
 
-        var expect = """
-            ----boundary\r
-            Content-Disposition: form-data; name="key"\r
-            \r
-            value\r
-            ----boundary--""";
+        var expect = "----boundary\r\n" + "Content-Disposition: form-data; name=\"key\"\r\n" + "\r\n" + "value\r\n"
+                + "----boundary--";
         assertEquals(expect, content.toString());
     }
 
@@ -148,7 +142,7 @@ public class MultipartFormDataBodyPublisherTest {
                             "application/xml");
             var client = HttpClient.newHttpClient();
             var request = HttpRequest
-                    .newBuilder(new URI("http://localhost:%d/".formatted(httpd.getAddress().getPort())))
+                    .newBuilder(new URI("http", null, "localhost", httpd.getAddress().getPort(), "/", null, null))
                     .header("Content-Type", publisher.contentType()).POST(publisher).build();
             client.send(request, BodyHandlers.discarding());
 
