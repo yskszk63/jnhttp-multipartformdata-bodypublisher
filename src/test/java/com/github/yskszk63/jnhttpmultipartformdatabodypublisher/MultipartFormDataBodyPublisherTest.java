@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.nio.file.Files;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
+import java.nio.charset.Charset;
 import java.security.MessageDigest;
 import java.security.DigestInputStream;
 import java.util.Optional;
@@ -26,7 +27,7 @@ import org.junit.jupiter.api.Test;
 public class MultipartFormDataBodyPublisherTest {
     @Test
     public void testStringPart() throws IOException {
-        var part = new StringPart("key", "val");
+        var part = new StringPart("key", "val", Charset.forName("utf8"));
         assertEquals(part.name(), "key");
 
         var buf = new byte[3];
@@ -81,7 +82,8 @@ public class MultipartFormDataBodyPublisherTest {
 
     @Test
     public void testMultipartFormDataChannel() throws Exception {
-        var channel = new MultipartFormDataChannel("----boundary", List.<Part> of(new StringPart("key", "value")));
+        var channel = new MultipartFormDataChannel("----boundary",
+                List.<Part> of(new StringPart("key", "value", Charset.forName("utf8"))), Charset.forName("utf8"));
         assertEquals(true, channel.isOpen());
         var content = new StringBuilder();
         try (channel) {
@@ -117,7 +119,7 @@ public class MultipartFormDataBodyPublisherTest {
                     public int read(ByteBuffer buf) throws IOException {
                         throw exception;
                     }
-                })));
+                })), Charset.forName("utf8"));
         try (channel) {
             while (channel.read(ByteBuffer.allocate(1)) != -1) {
                 // nop
