@@ -22,6 +22,9 @@ import java.util.concurrent.Flow.Subscriber;
 import java.util.function.Supplier;
 import java.util.StringJoiner;
 
+/**
+ * multipart/form-data BodyPublisher.
+ */
 public class MultipartFormDataBodyPublisher implements BodyPublisher {
     private static String nextBoundary() {
         var random = new BigInteger(128, new Random());
@@ -36,10 +39,19 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
     private final BodyPublisher delegate = BodyPublishers.ofInputStream(
             () -> Channels.newInputStream(new MultipartFormDataChannel(this.boundary, this.parts, this.charset)));
 
+    /**
+     * Construct {@link MultipartFormDataBodyPublisher}
+     */
     public MultipartFormDataBodyPublisher() {
         this(Charset.forName("utf8"));
     }
 
+    /**
+     * Construct {@link MultipartFormDataBodyPublisher}
+     *
+     * @param charset
+     *            character encoding
+     */
     public MultipartFormDataBodyPublisher(Charset charset) {
         this.charset = charset;
     }
@@ -49,37 +61,119 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
         return this;
     }
 
-    public MultipartFormDataBodyPublisher add(String key, String value) {
-        return this.add(new StringPart(key, value, this.charset));
+    /**
+     * Add part.
+     *
+     * @param name
+     *            field name
+     * @param value
+     *            field value
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher add(String name, String value) {
+        return this.add(new StringPart(name, value, this.charset));
     }
 
-    public MultipartFormDataBodyPublisher addFile(String key, Path path) {
-        return this.add(new FilePart(key, path));
+    /**
+     * Add part. Content using specified path.
+     *
+     * @param name
+     *            field name
+     * @param path
+     *            field value
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addFile(String name, Path path) {
+        return this.add(new FilePart(name, path));
     }
 
-    public MultipartFormDataBodyPublisher addFile(String key, Path path, String contentType) {
-        return this.add(new FilePart(key, path, contentType));
+    /**
+     * Add part. Content using specified path.
+     *
+     * @param name
+     *            field name
+     * @param path
+     *            field value
+     * @param contentType
+     *            Content-Type
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addFile(String name, Path path, String contentType) {
+        return this.add(new FilePart(name, path, contentType));
     }
 
-    public MultipartFormDataBodyPublisher addStream(String key, String filename, Supplier<InputStream> supplier) {
-        return this.add(new StreamPart(key, filename, () -> Channels.newChannel(supplier.get())));
+    /**
+     * Add part with {@link InputStream}
+     *
+     * @param name
+     *            field name
+     * @param filename
+     *            file name
+     * @param supplier
+     *            field value
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addStream(String name, String filename, Supplier<InputStream> supplier) {
+        return this.add(new StreamPart(name, filename, () -> Channels.newChannel(supplier.get())));
     }
 
-    public MultipartFormDataBodyPublisher addStream(String key, String filename, Supplier<InputStream> supplier,
+    /**
+     * Add part with {@link InputStream}
+     *
+     * @param name
+     *            field name
+     * @param filename
+     *            file name
+     * @param supplier
+     *            field value
+     * @param contentType
+     *            Content-Type
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addStream(String name, String filename, Supplier<InputStream> supplier,
             String contentType) {
         return this.add(new StreamPart(key, filename, () -> Channels.newChannel(supplier.get()), contentType));
     }
 
-    public MultipartFormDataBodyPublisher addChannel(String key, String filename,
+    /**
+     * Add part with {@link ReadableByteChannel}
+     *
+     * @param name
+     *            field name
+     * @param filename
+     *            file name
+     * @param supplier
+     *            field value
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addChannel(String name, String filename,
             Supplier<ReadableByteChannel> supplier) {
         return this.add(new StreamPart(key, filename, supplier));
     }
 
-    public MultipartFormDataBodyPublisher addChannel(String key, String filename,
+    /**
+     * Add part with {@link ReadableByteChannel}
+     *
+     * @param name
+     *            field name
+     * @param filename
+     *            file name
+     * @param supplier
+     *            field value
+     * @param contentType
+     *            Content-Type
+     * @return this
+     */
+    public MultipartFormDataBodyPublisher addChannel(String name, String filename,
             Supplier<ReadableByteChannel> supplier, String contentType) {
-        return this.add(new StreamPart(key, filename, supplier, contentType));
+        return this.add(new StreamPart(name, filename, supplier, contentType));
     }
 
+    /**
+     * Get Content-Type
+     *
+     * @return Content-Type
+     */
     public String contentType() {
         try (var formatter = new Formatter()) {
             return formatter.format("multipart/form-data;boundary=%s", this.boundary).toString();
