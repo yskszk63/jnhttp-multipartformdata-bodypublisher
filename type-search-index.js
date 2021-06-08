@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"All Classes","u":"allclasses-index.html"},{"p":"com.github.yskszk63.jnhttpmultipartformdatabodypublisher","l":"MultipartFormDataBodyPublisher"}];updateSearchResults();
