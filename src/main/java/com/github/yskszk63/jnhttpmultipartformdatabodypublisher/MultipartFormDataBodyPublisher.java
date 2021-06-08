@@ -105,12 +105,6 @@ class StringPart implements Part {
         this.value = value;
     }
 
-    public StringPart(String string, String string2, Object object) {
-    }
-
-    public StringPart(String string, String string2, Object object) {
-    }
-
     @Override
     public String name() {
         return this.name;
