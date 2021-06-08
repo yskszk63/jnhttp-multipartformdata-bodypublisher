@@ -2,6 +2,7 @@ package com.github.yskszk63.jnhttpmultipartformdatabodypublisher;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigInteger;
 import java.net.http.HttpRequest.BodyPublisher;
 import java.net.http.HttpRequest.BodyPublishers;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.concurrent.Flow.Subscriber;
+import java.util.function.Supplier;
 
 public class MultipartFormDataBodyPublisher implements BodyPublisher {
     private static String nextBoundary() {
@@ -37,8 +39,31 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
         return this.add(new StringPart(key, value));
     }
 
+    public MultipartFormDataBodyPublisher addFile(String key, Path path) {
+        return this.add(new FilePart(key, path));
+    }
+
     public MultipartFormDataBodyPublisher addFile(String key, Path path, String contentType) {
         return this.add(new FilePart(key, path, contentType));
+    }
+
+    public MultipartFormDataBodyPublisher addStream(String key, String filename, Supplier<InputStream> supplier) {
+        return this.add(new StreamPart(key, filename, () -> Channels.newChannel(supplier.get())));
+    }
+
+    public MultipartFormDataBodyPublisher addStream(String key, String filename, Supplier<InputStream> supplier,
+            String contentType) {
+        return this.add(new StreamPart(key, filename, () -> Channels.newChannel(supplier.get()), contentType));
+    }
+
+    public MultipartFormDataBodyPublisher addChannel(String key, String filename,
+            Supplier<ReadableByteChannel> supplier) {
+        return this.add(new StreamPart(key, filename, supplier));
+    }
+
+    public MultipartFormDataBodyPublisher addChannel(String key, String filename,
+            Supplier<ReadableByteChannel> supplier, String contentType) {
+        return this.add(new StreamPart(key, filename, supplier, contentType));
     }
 
     public String contentType() {
@@ -80,6 +105,12 @@ class StringPart implements Part {
         this.value = value;
     }
 
+    public StringPart(String string, String string2, Object object) {
+    }
+
+    public StringPart(String string, String string2, Object object) {
+    }
+
     @Override
     public String name() {
         return this.name;
@@ -89,6 +120,44 @@ class StringPart implements Part {
     public ReadableByteChannel open() throws IOException {
         var input = new ByteArrayInputStream(this.value.getBytes("utf8"));
         return Channels.newChannel(input);
+    }
+}
+
+class StreamPart implements Part {
+    private final String name;
+    private final String filename;
+    private final Supplier<ReadableByteChannel> supplier;
+    private final String contentType;
+
+    StreamPart(String name, String filename, Supplier<ReadableByteChannel> supplier, String contentType) {
+        this.name = name;
+        this.filename = filename;
+        this.supplier = supplier;
+        this.contentType = contentType;
+    }
+
+    StreamPart(String name, String filename, Supplier<ReadableByteChannel> supplier) {
+        this(name, filename, supplier, "application/octet-stream");
+    }
+
+    @Override
+    public String name() {
+        return this.name;
+    }
+
+    @Override
+    public Optional<String> filename() {
+        return Optional.of(filename);
+    }
+
+    @Override
+    public Optional<String> contentType() {
+        return Optional.of(this.contentType);
+    }
+
+    @Override
+    public ReadableByteChannel open() throws IOException {
+        return this.supplier.get();
     }
 }
 
