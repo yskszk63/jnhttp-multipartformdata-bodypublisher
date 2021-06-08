@@ -1,0 +1,30 @@
+name: doc
+
+on:
+  push:
+    branches:
+    - main
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: sdkman/sdkman-action@master
+      id: installjava
+      with:
+        candidate: java
+        version: 16.0.1.hs-adpt
+    - uses: actions/setup-java@v1
+      id: setup-java
+      with:
+        java-version: 16
+        jdkFile: ${{ steps.installjava.outputs.file }}
+    - run: mvn javadoc:javadoc
+    - uses: peaceiris/actions-gh-pages@v3
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./target/site/apidocs
+
+# vim: set sw=2 ts=2 sts=2:
+
