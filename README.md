@@ -1,5 +1,9 @@
 # java.net.HttpClient multipart/form-data BodyPublisher
 
+[![codecov](https://codecov.io/gh/yskszk63/jnhttp-multipartformdata-bodypublisher/branch/main/graph/badge.svg?token=KYD3EHTNI4)](https://codecov.io/gh/yskszk63/jnhttp-multipartformdata-bodypublisher)
+
+[API Document](https://yskszk63.github.io/jnhttp-multipartformdata-bodypublisher/)
+
 ## Dependency
 
 ```xml
@@ -7,6 +11,8 @@
   <artifactId>jnhttp-multipartformdata-bodypublisher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 ```
+
+or copy from [MultipartFormDataBodyPublisher.java](https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher/blob/main/src/main/java/com/github/yskszk63/jnhttpmultipartformdatabodypublisher/MultipartFormDataBodyPublisher.java).
 
 ## Example
 
