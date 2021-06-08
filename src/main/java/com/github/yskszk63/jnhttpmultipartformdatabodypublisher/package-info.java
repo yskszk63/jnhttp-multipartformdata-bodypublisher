@@ -1,8 +1,9 @@
 /**
  * multipart/form-data for `java.net.HttpClient`.
  *
- * <h1>Example</h1>
- *
+ * <p>
+ * Example
+ * 
  * <pre>
  * {@code
  * var body = new MultipartFormData()

@@ -132,7 +132,7 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
      */
     public MultipartFormDataBodyPublisher addStream(String name, String filename, Supplier<InputStream> supplier,
             String contentType) {
-        return this.add(new StreamPart(key, filename, () -> Channels.newChannel(supplier.get()), contentType));
+        return this.add(new StreamPart(name, filename, () -> Channels.newChannel(supplier.get()), contentType));
     }
 
     /**
@@ -148,7 +148,7 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
      */
     public MultipartFormDataBodyPublisher addChannel(String name, String filename,
             Supplier<ReadableByteChannel> supplier) {
-        return this.add(new StreamPart(key, filename, supplier));
+        return this.add(new StreamPart(name, filename, supplier));
     }
 
     /**
