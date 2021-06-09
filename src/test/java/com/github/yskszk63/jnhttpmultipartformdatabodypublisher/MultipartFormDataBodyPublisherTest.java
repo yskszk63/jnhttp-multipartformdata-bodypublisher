@@ -97,7 +97,7 @@ public class MultipartFormDataBodyPublisherTest {
         assertEquals(false, channel.isOpen());
 
         var expect = "----boundary\r\n" + "Content-Disposition: form-data; name=\"key\"\r\n" + "\r\n" + "value\r\n"
-                + "----boundary--";
+                + "----boundary--\r\n";
         assertEquals(expect, content.toString());
     }
 

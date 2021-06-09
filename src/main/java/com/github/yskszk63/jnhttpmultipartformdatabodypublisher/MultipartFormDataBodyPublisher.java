@@ -357,7 +357,7 @@ class MultipartFormDataChannel implements ReadableByteChannel {
                     this.buf = ByteBuffer.wrap((this.boundary + "\r\n").getBytes(LATIN1));
                     this.state = State.Headers;
                 } else {
-                    this.buf = ByteBuffer.wrap((this.boundary + "--").getBytes(LATIN1));
+                    this.buf = ByteBuffer.wrap((this.boundary + "--\r\n").getBytes(LATIN1));
                     this.state = State.Done;
                 }
                 break;
