@@ -176,7 +176,7 @@ public class MultipartFormDataBodyPublisher implements BodyPublisher {
      */
     public String contentType() {
         try (var formatter = new Formatter()) {
-            return formatter.format("multipart/form-data;boundary=%s", this.boundary).toString();
+            return formatter.format("multipart/form-data; boundary=%s", this.boundary).toString();
         }
     }
 
@@ -354,10 +354,10 @@ class MultipartFormDataChannel implements ReadableByteChannel {
             case Boundary:
                 if (this.parts.hasNext()) {
                     this.current = this.parts.next();
-                    this.buf = ByteBuffer.wrap((this.boundary + "\r\n").getBytes(LATIN1));
+                    this.buf = ByteBuffer.wrap(("--" + this.boundary + "\r\n").getBytes(LATIN1));
                     this.state = State.Headers;
                 } else {
-                    this.buf = ByteBuffer.wrap((this.boundary + "--\r\n").getBytes(LATIN1));
+                    this.buf = ByteBuffer.wrap(("--" + this.boundary + "--\r\n").getBytes(LATIN1));
                     this.state = State.Done;
                 }
                 break;
