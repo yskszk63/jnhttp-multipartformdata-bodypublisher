@@ -181,6 +181,8 @@ public class MultipartFormDataBodyPublisherTest {
             try (var o = proc.getOutputStream()) {
                 // signal stop via stdio
                 o.write('a');
+            } catch (Exception e) {
+                e.printStackTrace();
             }
             proc.onExit().get();
         }
