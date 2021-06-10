@@ -3,26 +3,28 @@ package com.github.yskszk63.jnhttpmultipartformdatabodypublisher;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import java.io.IOException;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.ByteBuffer;
-import java.nio.file.Path;
-import java.nio.file.Files;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.Charset;
-import java.security.MessageDigest;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.security.DigestInputStream;
-import java.util.Optional;
+import java.security.MessageDigest;
 import java.util.List;
+import java.util.Optional;
 
 import com.sun.net.httpserver.HttpServer;
+
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 
 public class MultipartFormDataBodyPublisherTest {
     @Test
@@ -150,6 +152,37 @@ public class MultipartFormDataBodyPublisherTest {
 
         } finally {
             httpd.stop(0);
+        }
+    }
+
+    // FIXME remove
+    @Test
+    @EnabledIfEnvironmentVariable(named = "TEST_ENABLE_WITH_GO", matches = ".+")
+    public void testWithGoServer() throws Exception {
+        var proc = new ProcessBuilder("go", "run", "main.go").redirectInput(ProcessBuilder.Redirect.PIPE)
+                .redirectOutput(ProcessBuilder.Redirect.PIPE).redirectError(ProcessBuilder.Redirect.INHERIT).start();
+        // signal via stdio
+        proc.getInputStream().read();
+
+        try {
+            var publisher = new MultipartFormDataBodyPublisher().add("key", "value")
+                    .addFile("f1", Path.of(".gitignore")).addFile("f2", Path.of(".gitignore"), "text/plain")
+                    .addStream("f3", "fname", () -> new ByteArrayInputStream("a".getBytes()))
+                    .addStream("f4", "fname", () -> new ByteArrayInputStream("b".getBytes()), "text/plain")
+                    .addChannel("f5", "fname", () -> Channels.newChannel(new ByteArrayInputStream("c".getBytes())))
+                    .addChannel("f6", "fname", () -> Channels.newChannel(new ByteArrayInputStream("d".getBytes())),
+                            "text/plain");
+            var client = HttpClient.newHttpClient();
+            var request = HttpRequest.newBuilder(new URI("http", null, "localhost", 8080, "/", null, null))
+                    .header("Content-Type", publisher.contentType()).POST(publisher).build();
+            var response = client.send(request, BodyHandlers.discarding());
+            assertEquals(response.statusCode(), 200);
+        } finally {
+            try (var o = proc.getOutputStream()) {
+                // signal stop via stdio
+                o.write('a');
+            }
+            proc.onExit().get();
         }
     }
 }

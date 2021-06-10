@@ -6,6 +6,9 @@ on:
     - main
   pull_request:
 
+env:
+  TEST_ENABLE_WITH_GO: 1
+
 jobs:
   check:
     runs-on: ubuntu-latest
