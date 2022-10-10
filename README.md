@@ -7,7 +7,7 @@
 ## Dependency
 
 ```xml
-  <groupId>com.github.yskszk63.jnhttp-multipartformdata-bodypublisher</groupId>
+  <groupId>io.github.yskszk63</groupId>
   <artifactId>jnhttp-multipartformdata-bodypublisher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 ```

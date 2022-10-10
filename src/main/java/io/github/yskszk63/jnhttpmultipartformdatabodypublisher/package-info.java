@@ -22,4 +22,4 @@
  * }
  * </pre>
  */
-package com.github.yskszk63.jnhttpmultipartformdatabodypublisher;
+package io.github.yskszk63.jnhttpmultipartformdatabodypublisher;

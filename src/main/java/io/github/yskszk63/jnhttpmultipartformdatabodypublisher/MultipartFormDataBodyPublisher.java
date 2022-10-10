@@ -1,4 +1,4 @@
-package com.github.yskszk63.jnhttpmultipartformdatabodypublisher;
+package io.github.yskszk63.jnhttpmultipartformdatabodypublisher;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
