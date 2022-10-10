@@ -41,7 +41,7 @@ jobs:
         jdkFile: ${{ steps.installjava.outputs.file }}
     - uses: actions/setup-go@v1
       with:
-        go-version: 1.16
+        go-version: 1.19
     - run: mvn formatter:validate
     - run: mvn test
     - run: mvn package
