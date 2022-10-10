@@ -10,16 +10,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
-    - uses: sdkman/sdkman-action@master
-      id: installjava
-      with:
-        candidate: java
-        version: 17.0.4.1-tem
-    - uses: actions/setup-java@v1
-      id: setup-java
+    - uses: actions/setup-java@v2
       with:
         java-version: 17
-        jdkFile: ${{ steps.installjava.outputs.file }}
+        distribution: temurin
+        cache: maven
     - run: mvn javadoc:javadoc
     - uses: peaceiris/actions-gh-pages@v3
       with:
