@@ -14,11 +14,11 @@ jobs:
       id: installjava
       with:
         candidate: java
-        version: 16.0.1.hs-adpt
+        version: 17.0.4.1-tem
     - uses: actions/setup-java@v1
       id: setup-java
       with:
-        java-version: 16
+        java-version: 17
         jdkFile: ${{ steps.installjava.outputs.file }}
     - run: mvn javadoc:javadoc
     - uses: peaceiris/actions-gh-pages@v3

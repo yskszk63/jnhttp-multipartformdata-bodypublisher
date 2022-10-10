@@ -13,12 +13,12 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: [11, 16]
+        java_version: [11, 17]
         include:
         - java_version: 11
-          java_dist: 11.0.11.hs-adpt
-        - java_version: 16
-          java_dist: 16.0.1.hs-adpt
+          java_dist: 11.0.16.1-tem
+        - java_version: 17
+          java_dist: 17.0.4.1-tem
     steps:
     - run: go version
     - uses: actions/checkout@v2
@@ -61,7 +61,7 @@ jobs:
     - uses: actions/setup-java@v1
       id: setup-java
       with:
-        java-version: 16
+        java-version: 17
         jdkFile: ${{ steps.installjava.outputs.file }}
     - run: mvn test
     - uses: codecov/codecov-action@v1.5.0
