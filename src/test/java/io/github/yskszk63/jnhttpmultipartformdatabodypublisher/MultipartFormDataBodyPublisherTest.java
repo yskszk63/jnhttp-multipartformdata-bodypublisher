@@ -1,4 +1,4 @@
-package com.github.yskszk63.jnhttpmultipartformdatabodypublisher;
+package io.github.yskszk63.jnhttpmultipartformdatabodypublisher;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;

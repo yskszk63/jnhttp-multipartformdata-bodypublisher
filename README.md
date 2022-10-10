@@ -7,14 +7,14 @@
 ## Dependency
 
 ```xml
-  <groupId>com.github.yskszk63.jnhttp-multipartformdata-bodypublisher</groupId>
+  <groupId>io.github.yskszk63</groupId>
   <artifactId>jnhttp-multipartformdata-bodypublisher</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 ```
 
 TODO: not released yet.
 
-or copy from [MultipartFormDataBodyPublisher.java](https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher/blob/main/src/main/java/com/github/yskszk63/jnhttpmultipartformdatabodypublisher/MultipartFormDataBodyPublisher.java).
+or copy from [MultipartFormDataBodyPublisher.java](https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher/blob/main/src/main/java/io/github/yskszk63/jnhttpmultipartformdatabodypublisher/MultipartFormDataBodyPublisher.java).
 
 ## Example
 
