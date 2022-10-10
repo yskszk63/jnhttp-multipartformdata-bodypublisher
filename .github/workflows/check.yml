@@ -13,12 +13,14 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        java_version: [11, 17]
+        java_version: [11, 17, 19]
         include:
         - java_version: 11
           java_dist: 11.0.16.1-tem
         - java_version: 17
           java_dist: 17.0.4.1-tem
+        - java_version: 19
+          java_dist: 19-tem
     steps:
     - run: go version
     - uses: actions/checkout@v2
