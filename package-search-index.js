@@ -1,1 +1,1 @@
-packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"com.github.yskszk63.jnhttpmultipartformdatabodypublisher"}];updateSearchResults();
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.yskszk63.jnhttpmultipartformdatabodypublisher"}];updateSearchResults();
