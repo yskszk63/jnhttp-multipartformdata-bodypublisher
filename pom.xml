@@ -5,10 +5,36 @@
   <groupId>io.github.yskszk63</groupId>
   <artifactId>jnhttp-multipartformdata-bodypublisher</artifactId>
   <packaging>jar</packaging>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.1</version>
 
   <name>jnhttp-multipartformdata-bodypublisher</name>
   <url>https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher</url>
+  <description>java.net.HttpClient multipart/form-data BodyPublisher</description>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+    <license>
+      <name>MIT</name>
+      <url>https://opensource.org/licenses/MIT</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <scm>
+    <connection>scm:git:https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher.git</connection>
+    <url>https://github.com/yskszk63/jnhttp-multipartformdata-bodypublisher</url>
+  </scm>
+
+  <developers>
+    <developer>
+      <name>yskszk63</name>
+      <email>yskszk63@gmail.com</email>
+    </developer>
+  </developers>
 
   <properties>
     <java.version>11</java.version>
@@ -78,7 +104,7 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.7</version>
+        <version>1.6.13</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
